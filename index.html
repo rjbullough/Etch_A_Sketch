@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Etch-a-Sketch</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      #canvas {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        margin: 0 auto;
+        padding: 1em 0 1em 0;
+      }
+      #canvas input {
+        padding: 1em;
+        font-size: 2em;
+      }
+      .hover {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="#" id="canvas">
+      <label for="canvas-size">Canvas Size (px)</label>
+      <input type="text" name="canvas-size" id="canvas-size" />
+      <label for="cell-number">Cells per side</label>
+      <input type="text" id="cell-number" />
+      <button id="draw-canvas">Draw a new canvas</button>
+    </form>
+    <script>
+      function drawCanvas(e) {
+        // Remove old canvas
+        let body = document.querySelector("body");
+        while (body.children.length > 2) {
+          body.removeChild(body.lastChild);
+        }
+        // Define the canvas Size
+        const canvasSize = e;
+        const canvas = document.createElement("aside");
+        canvas.className = "grid-canvas";
+        canvas.style.cssText =
+          "display: flex; flex-wrap: wrap; border: 1px solid black; margin: 0 auto;";
+        canvas.style.width = +canvasSize + 2 + "px";
+        canvas.style.height = +canvasSize + 2 + "px";
+        document.body.appendChild(canvas);
+      }
+      function drawCells(e) {
+        // Empty the canvas
+        let canvas = document.querySelector(".grid-canvas");
+        while (canvas.firstChild) {
+          canvas.removeChild(canvas.lastChild);
+        }
+        // Fill the canvas with squares
+        let w = document.querySelector(".grid-canvas").clientWidth;
+        const gridSquare = document.createElement("div");
+        for (i = 0; i < e * e; i++) {
+          gridSquare.className = "grid-square";
+          gridSquare.style.cssText =
+            "flex: 0 1 " + w / e + "px; border: 1px solid black;";
+          document
+            .querySelector(".grid-canvas")
+            .appendChild(gridSquare.cloneNode(true));
+        }
+        hoverEffect();
+      }
+      // Add a class that colours the BG on hover
+      function hoverEffect() {
+        function colorCell(e) {
+          e.target.classList.add("hover");
+        }
+        const cells = document.querySelectorAll(".grid-square");
+        for (i = 0; i < cells.length; i++) {
+          cells[i].addEventListener("mouseenter", colorCell);
+        }
+      }
+      const button = document.querySelector("#draw-canvas");
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        // Get values from inputs
+        let size = document.querySelector("#canvas-size").value;
+        let cells = document.querySelector("#cell-number").value;
+        // Run the functions using the inputs
+        drawCanvas(size);
+        drawCells(cells);
+      });
+    </script>
+  </body>
+</html>
